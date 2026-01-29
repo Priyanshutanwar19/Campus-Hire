@@ -1,8 +1,11 @@
-module.exports = role => {
+const roleMiddleware = (...allowedRoles) => {
   return (req, res, next) => {
-    if (req.user.role !== role) {
-      return res.status(403).json({ message: "Forbidden" });
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      res.status(403);
+      throw new Error("Access denied");
     }
     next();
   };
 };
+
+module.exports = roleMiddleware;
