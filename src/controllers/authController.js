@@ -49,7 +49,7 @@ exports.login = asyncHandler(async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // true in production (HTTPS)
+    secure: false,
     sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000
   });
@@ -57,4 +57,14 @@ exports.login = asyncHandler(async (req, res) => {
   res.json({
     message: "Login successful"
   });
+});
+
+exports.logout = asyncHandler(async (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logout successful" });
+});
+
+exports.getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password");
+  res.json(user);
 });
